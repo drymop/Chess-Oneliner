@@ -12,8 +12,7 @@ B_KNIGHT = 9
 W_PAWN   = 10
 B_PAWN   = 11
 
-PIECES = ({W_KING,W_QUEEN,W_ROOK,W_BISHOP,W_KNIGHT,W_PAWN},{B_KING,B_QUEEN,B_ROOK,B_BISHOP,B_KING,B_PAWN})
-NON_KING_PIECES = ({W_QUEEN,W_ROOK,W_BISHOP,W_KNIGHT,W_PAWN},{B_QUEEN,B_ROOK,B_BISHOP,B_KING,B_PAWN})
+PIECES = ({W_KING,W_QUEEN,W_ROOK,W_BISHOP,W_KNIGHT,W_PAWN},{B_KING,B_QUEEN,B_ROOK,B_BISHOP,B_KNIGHT,B_PAWN})
 
 # EMPTY    = 0
 # W_KING   = 1
@@ -67,7 +66,7 @@ def is_controlled(b,r,c,color):
             if b[r2][c2]-color in APPLICABLE_PIECE[x,y]:
                 # print("Checked by slide at %s %s" % (r2, c2))
                 return True
-            if b[r2][c2]>=0 and b[r2][c2]!=B_KING-color: # not empty and not own king
+            if b[r2][c2]>=0 and b[r2][c2]!=B_KING-color: # not empty and not opponent king
                 break
     # Knight
     for x,y in KNIGHT_DIRS:

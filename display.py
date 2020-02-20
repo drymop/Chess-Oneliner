@@ -1,5 +1,5 @@
 from print_board import *
-from move_gen import initialize_board, gen_move
+from move_gen_oneline import GM as gen_move
 from notation import get_move_notation
 
 PLAYERS = ["White", "Black"]
@@ -10,7 +10,7 @@ def get_user_move(b,moves):
     return move_notations.get(input().strip().lower(),None)
 
 def main():
-    b = initialize_board()
+    b = [[4,8,6,2,0,6,8,4],[10]*8,[-1]*8,[-1]*8,[-1]*8,[-1]*8,[11]*8,[5,9,7,3,1,7,9,5]]
     color = 0
     moves = gen_move(b,color)
     while True:
@@ -21,6 +21,7 @@ def main():
             print("Game over")
             break
         print(f"{PLAYERS[color]}'s turn:")
+        print(len(moves))
         m = get_user_move(b,moves)
         if m:
             b = m[0]
