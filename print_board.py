@@ -1,16 +1,16 @@
-EMPTY    = 0
-W_KING   = 1
+EMPTY    = -1
+W_KING   = 0
+B_KING   = 1
 W_QUEEN  = 2
-W_ROOK   = 3
-W_BISHOP = 4
-W_KNIGHT = 5
-W_PAWN   = 6
-B_KING   = 7
-B_QUEEN  = 8
-B_ROOK   = 9
-B_BISHOP = 10
-B_KNIGHT = 11
-B_PAWN   = 12
+B_QUEEN  = 3
+W_ROOK   = 4
+B_ROOK   = 5
+W_BISHOP = 6
+B_BISHOP = 7
+W_KNIGHT = 8
+B_KNIGHT = 9
+W_PAWN   = 10
+B_PAWN   = 11
 
 # print stuff
 BOARD_TEMPLATE_STR = \
@@ -33,8 +33,10 @@ BOARD_TEMPLATE_STR = \
      +---+---+---+---+---+---+---+---+
        A   B   C   D   E   F   G   H"""
 
-ASCII_PIECE_STR =   [" ", "k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P"]
-UNICODE_PIECE_STR = [" ", "\u2654", "\u2655","\u2656","\u2657","\u2658","\u2659","\u265A","\u265B","\u265C","\u265D","\u265E","\u265F"]
+# ASCII_PIECE_STR =   [" ", "k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P"]
+# UNICODE_PIECE_STR = [" ", "\u2654", "\u2655","\u2656","\u2657","\u2658","\u2659","\u265A","\u265B","\u265C","\u265D","\u265E","\u265F"]
+ASCII_PIECE_STR =   ["k","K","q","Q","r","R","b","B","n","N","p","P"," "]
+UNICODE_PIECE_STR = ["\u2654","\u265A","\u2655","\u265B","\u2656","\u265C","\u2657","\u265D","\u2658","\u265E","\u2659","\u265F"," "]
 PIECE_STR = UNICODE_PIECE_STR
 def print_board(board):
     print(BOARD_TEMPLATE_STR % tuple(PIECE_STR[p] for row in reversed(board) for p in row))
