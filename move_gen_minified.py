@@ -1,7 +1,7 @@
 # directions of rook, bishop, queen, knight,pawn
 Dr = [(0,1),(0,-1),(1,0),(-1,0)]
 Db = [(1,1),(-1,1),(1,-1),(-1,-1)]
-Dq = Dr  + Db
+Dq = Dr + Db
 Dn = ((1,2),(-1,2),(1,-2),(-1,-2),(2,1),(-2,1),(2,-1),(-2,-1))
 Dp = (1,-1) # pawn Dp direction for white, black
 # map queen directions to the appropriate piece (queen, rook, or bishop)

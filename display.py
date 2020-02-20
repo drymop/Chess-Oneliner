@@ -1,5 +1,5 @@
 from print_board import *
-from move_gen_oneline import GM as gen_move
+from move_gen_minified import GM as gen_move
 from notation import get_move_notation
 
 PLAYERS = ["White", "Black"]
