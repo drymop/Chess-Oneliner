@@ -34,6 +34,9 @@ QUEEN_DIRS = CARDINAL_DIRS  + DIAGONAL_DIRS
 APPLICABLE_PIECE = {**{d:(W_QUEEN,W_ROOK) for d in CARDINAL_DIRS},**{d:(W_QUEEN,W_BISHOP) for d in DIAGONAL_DIRS}}
 KNIGHT_DIRS = ((1,2),(-1,2),(1,-2),(-1,-2),(2,1),(-2,1),(2,-1),(-2,-1))
 FORWARD = (1, -1) # forward direction for white, black
+PAWN_START = (1, 6)
+PAWN_MID = (2,5)
+PAWN_END = (3, 4)
 
 def initialize_board():
     return [
@@ -86,7 +89,7 @@ def is_controlled(b,r,c,color):
 # @return List of next states, each is a tuple of (move, board)
 # def gen_moves(b,color):
 
-def gen_king_move(r,c,color):
+def gen_king_move(b,r,c,color):
     moves = []
     # normal move
     for x,y in QUEEN_DIRS:
@@ -98,16 +101,79 @@ def gen_king_move(r,c,color):
     # castle: later
     return moves
 
+def gen_slide_move(b,r,c,kr,kc,color,dirs,stop=8):
+    moves = []
+    for x,y in dirs:
+        for i in range(1, stop):
+            r2, c2 = r+i*x, c+i*y
+            if is_out(r2,c2) or b[r2][c2] in PIECES[color]:
+                break
+            b2 = [[b[r][c] if (i,j)==(r2,c2) else EMPTY if (i,j)==(r,c) else b[i][j] for j in range(8)]for i in range(8)]
+            if not is_controlled(b2,kr,kc,1-color):
+                moves.append((b2,(r,c),(r2,c2)))
+            if b[r2][c2]>=0: break
+    return moves
+
+def gen_pawn_move(b,r,c,kr,kc,color):
+    moves = []
+    # forward once (possibly promotion)
+    r2 = r+FORWARD[color]
+    if b[r2][c] == EMPTY:
+        b2 = [[b[r][c] if (i,j)==(r2,c) else EMPTY if (i,j)==(r,c) else b[i][j] for j in range(8)]for i in range(8)]
+        if not is_controlled(b2,kr,kc,1-color):
+            if r2 % 7:
+                # not 0 or 7, aka not promotion
+                moves.append((b2,(r,c),(r2,c)))
+            else:
+                # 0 or 7, aka promotion
+                for p in range(W_QUEEN, W_PAWN, 2):
+                    b2 = [[p+color if (i,j)==(r2,c) else b2[i][j] for j in range(8)]for i in range(8)]
+                    moves.append((b2,(r,c),(r2,c)))
+    # forward twice
+    if r==PAWN_START[color] and b[PAWN_MID[color]][c] == EMPTY and b[PAWN_END[color]][c] == EMPTY:
+        b2 = [[b[r][c] if (i,j)==(PAWN_END[color],c) else EMPTY if (i,j)==(r,c) else b[i][j] for j in range(8)]for i in range(8)]
+        if not is_controlled(b2,kr,kc,1-color):
+            moves.append((b2,(r,c),(PAWN_END[color],c)))
+    # diagonal capture
+    r2 = r+FORWARD[color]
+    for c2 in (c-1, c+1):
+        if 0<=c2<8 and b[r2][c2] >= 0 and b[r2][c2]%2!=color:
+            b2 = [[b[r][c] if (i,j)==(r2,c2) else EMPTY if (i,j)==(r,c) else b[i][j] for j in range(8)]for i in range(8)]
+            if not is_controlled(b2,kr,kc,1-color):
+                if r2 % 7:
+                    # not 0 or 7, aka not promotion
+                    moves.append((b2,(r,c),(r2,c2)))
+                else:
+                    # 0 or 7, aka promotion
+                    for p in range(W_QUEEN, W_PAWN, 2):
+                        b2 = [[p+color if (i,j)==(r2,c2) else b2[i][j] for j in range(8)]for i in range(8)]
+                        moves.append((b2,(r,c),(r2,c2)))
+    # en passant
+    # TODO
+    return moves
+
+def gen_move(b,color):
+    kr, kc = next((i,j) for i in range(8) for j in range(8) if b[i][j]==W_KING+color)
+    moves = []
+    table = {
+        W_KING  : lambda r,c: gen_king_move(b,r,c,color),
+        W_QUEEN : lambda r,c: gen_slide_move(b,r,c,kr,kc,color,QUEEN_DIRS),
+        W_ROOK  : lambda r,c: gen_slide_move(b,r,c,kr,kc,color,CARDINAL_DIRS),
+        W_BISHOP: lambda r,c :gen_slide_move(b,r,c,kr,kc,color,DIAGONAL_DIRS),
+        W_KNIGHT: lambda r,c :gen_slide_move(b,r,c,kr,kc,color,KNIGHT_DIRS,stop=2),
+        W_PAWN  : lambda r,c :gen_pawn_move(b,r,c,kr,kc,color),
+    }
+    do_nothing = lambda r,c: []
+    for i in range(8):
+        for j in range(8):
+            moves += table.get(b[i][j]-color,do_nothing)(i,j)
+    return moves
+
 if __name__ == '__main__':
     from print_board import print_board
     b = initialize_board()
-    for c in range(8):
-        b[1][c] = EMPTY
-        b[6][c] = EMPTY
-    b[2][4] = B_QUEEN
-    b[0][4] = EMPTY
-    b[1][4] = W_KING
     print_board(b)
-    moves = gen_king_move(1,4,0)
+    moves = gen_move(b,0)
     for m in moves:
         print(m[2])
+        print_board(m[0])
