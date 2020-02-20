@@ -12,6 +12,9 @@ B_KNIGHT = 9
 W_PAWN   = 10
 B_PAWN   = 11
 
+PIECES = ({W_KING,W_QUEEN,W_ROOK,W_BISHOP,W_KNIGHT,W_PAWN},{B_KING,B_QUEEN,B_ROOK,B_BISHOP,B_KING,B_PAWN})
+NON_KING_PIECES = ({W_QUEEN,W_ROOK,W_BISHOP,W_KNIGHT,W_PAWN},{B_QUEEN,B_ROOK,B_BISHOP,B_KING,B_PAWN})
+
 # EMPTY    = 0
 # W_KING   = 1
 # W_QUEEN  = 2
@@ -46,12 +49,12 @@ def is_out(r,c):
 
 # @param color Color of the attacker, 0 for white, 1 for black
 def is_controlled(b,r,c,color):
+    # print("%s %s" % (r, c))
     # Sliding pieces
-    print("%s %s" % (r, c))
     for x,y in QUEEN_DIRS:
         r2,c2 = r+x,c+y
         if not is_out(r2,c2) and b[r2][c2]-color == W_KING:
-            print("Checked by king at %s %s" % (r2, c2))
+            # print("Checked by king at %s %s" % (r2, c2))
             return True
         for i in range(1,8):
             r2 = r+i*x
@@ -59,24 +62,41 @@ def is_controlled(b,r,c,color):
             if is_out(r2,c2):
                 break
             if b[r2][c2]-color in APPLICABLE_PIECE[x,y]:
-                print("Checked by slide at %s %s" % (r2, c2))
+                # print("Checked by slide at %s %s" % (r2, c2))
                 return True
-            if b[r2][c2]>=0: # not empty
+            if b[r2][c2]>=0 and b[r2][c2]!=B_KING-color: # not empty and not own king
                 break
     # Knight
     for x,y in KNIGHT_DIRS:
         r2,c2 = r+x,c+y
         if not is_out(r2, c2) and b[r2][c2]-color == W_KNIGHT:
-            print("Checked by knight at %s %s" % (r2, c2))
+            # print("Checked by knight at %s %s" % (r2, c2))
             return True
     # Pawn
     r2 = r-FORWARD[color]
     for y in (-1, 1):
         c2 = c+y
         if not is_out(r2,c2) and b[r2][c2]-color == W_PAWN:
-            print("Checked by pawn at %s %s" % (r2, c2))
+            # print("Checked by pawn at %s %s" % (r2, c2))
             return True
     return False
+
+# @param  b     The board
+# @oaram  color Color of the moving player (0 for white, 1 for black)
+# @return List of next states, each is a tuple of (move, board)
+# def gen_moves(b,color):
+
+def gen_king_move(r,c,color):
+    moves = []
+    # normal move
+    for x,y in QUEEN_DIRS:
+        r2,c2=r+x,c+y
+        if is_out(r2,c2) or b[r2][c2] in PIECES[color] or is_controlled(b,r2,c2,1-color):
+            continue
+        b2 = [[b[r][c] if (i,j)==(r2,c2) else EMPTY if (i,j)==(r,c) else b[i][j] for j in range(8)]for i in range(8)]
+        moves.append((b2,(r,c),(r2,c2)))
+    # castle: later
+    return moves
 
 if __name__ == '__main__':
     from print_board import print_board
@@ -84,12 +104,10 @@ if __name__ == '__main__':
     for c in range(8):
         b[1][c] = EMPTY
         b[6][c] = EMPTY
+    b[2][4] = B_QUEEN
+    b[0][4] = EMPTY
+    b[1][4] = W_KING
     print_board(b)
-    is_controlled(b,3,0,1)
-    is_controlled(b,3,1,1)
-    is_controlled(b,3,2,1)
-    is_controlled(b,3,3,1)
-    is_controlled(b,3,4,1)
-    is_controlled(b,3,5,1)
-    is_controlled(b,3,6,1)
-    is_controlled(b,3,7,1)
+    moves = gen_king_move(1,4,0)
+    for m in moves:
+        print(m[2])
