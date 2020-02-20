@@ -39,8 +39,10 @@ PIECE_STR = UNICODE_PIECE_STR
 def print_board(board):
     print(BOARD_TEMPLATE_STR % tuple(PIECE_STR[p] for row in reversed(board) for p in row))
 
-# board[row][col] with A1 being (0, 0), H8 being (0, 7)
-board = [[EMPTY]*8 for _ in range(8)]
-board[0][0] = W_KING
-board[7][0] = B_KING
-print_board(board)
+
+if __name__ == '__main__':
+    # board[row][col] with A1 being (0, 0), H8 being (0, 7)
+    board = [[EMPTY]*8 for _ in range(8)]
+    board[0][0] = W_KING
+    board[7][0] = B_KING
+    print_board(board)
