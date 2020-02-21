@@ -1,0 +1,1 @@
+(lambda f,i: f(f,i))((lambda g,i: print(i) or not i or g(g,i-1)),4)

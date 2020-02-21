@@ -7,7 +7,6 @@ Dp = (1,-1) # pawn Dp direction for white, black
 # map queen directions to the appropriate piece (queen, rook, or bishop)
 DM = {**{d:(2,4)for d in Dr},**{d:(2,6)for d in Db}}
 R8 = range(8) # save characters
-R7 = range(1,8) # save characters
 # piece of each color
 PC = ({0,2,4,6,8,10},{1,3,5,7,9,11})
 P1 = (1,6)
@@ -35,7 +34,7 @@ any((
         (any(
             # True to break
             FO(r+i*x,c+i*y)or P.clear()or P.append(b[r+i*x][c+i*y])or P[0]+1 and P[0]+p!=1
-            for i in R7
+            for i in range(1,8)
         ),)and P and P.pop()-p in DM[x,y]
         for x,y in Dq
     ),
@@ -88,7 +87,7 @@ Gp=lambda b,r,c,k,p,M,B=[]:\
 # board, player, temp to store kingPos, temp to store move list
 GM=lambda b,p,K=[],M=[]:\
     K.append([(i,j)for i in R8 for j in R8 if b[i][j]==p][0])or M.append([])or\
-    print("here")or any( 
+    any( 
         {
             0:lambda r,c:Gk(b,r,c,p,M[0]),
             2:lambda r,c:Gs(b,r,c,K[0],p,Dq,M[0]),
@@ -97,4 +96,4 @@ GM=lambda b,p,K=[],M=[]:\
             8:lambda r,c:Gs(b,r,c,K[0],p,Dn,M[0],2),
             10:lambda r,c:Gp(b,r,c,K[0],p,M[0]),
         }.get(b[i][j]-p,lambda r,c:0)(i,j) for i in R8 for j in R8
-    )or print("here2")or K.clear()or M.pop()
+    )or K.clear()or M.pop()

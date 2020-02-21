@@ -49,6 +49,10 @@ def initialize_board():
 def is_out(r,c):
     return 2-(0<=r<8)-(0<=c<8)
 
+def is_checked(b,color):
+    k = [(i,j)for i in range(8) for j in range(8) if b[i][j]-color==W_KING][0]
+    return is_controlled(b,*k,1-color)
+
 # @param color Color of the attacker, 0 for white, 1 for black
 def is_controlled(b,r,c,color):
     # print("%s %s" % (r, c))
@@ -152,7 +156,11 @@ def gen_pawn_move(b,r,c,kr,kc,color):
     return moves
 
 def gen_move(b,color):
-    kr, kc = next((i,j) for i in range(8) for j in range(8) if b[i][j]==W_KING+color)
+    try:
+        kr, kc = next((i,j) for i in range(8) for j in range(8) if b[i][j]==W_KING+color)
+    except:
+        from print_board import print_board
+        print_board(b)
     moves = []
     table = {
         W_KING  : lambda r,c: gen_king_move(b,r,c,color),

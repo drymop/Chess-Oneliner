@@ -39,7 +39,10 @@ ASCII_PIECE_STR =   ["k","K","q","Q","r","R","b","B","n","N","p","P"," "]
 UNICODE_PIECE_STR = ["\u2654","\u265A","\u2655","\u265B","\u2656","\u265C","\u2657","\u265D","\u2658","\u265E","\u2659","\u265F"," "]
 PIECE_STR = UNICODE_PIECE_STR
 def print_board(board):
-    print(BOARD_TEMPLATE_STR % tuple(PIECE_STR[p] for row in reversed(board) for p in row))
+    print("     +---+---+---+---+---+---+---+---+\n  8  | %s | %s | %s | %s | %s | %s | %s | %s |\n     +---+---+---+---+---+---+---+---+\n  7  | %s | %s | %s | %s | %s | %s | %s | %s |\n     +---+---+---+---+---+---+---+---+\n  6  | %s | %s | %s | %s | %s | %s | %s | %s |\n     +---+---+---+---+---+---+---+---+\n  5  | %s | %s | %s | %s | %s | %s | %s | %s |\n     +---+---+---+---+---+---+---+---+\n  4  | %s | %s | %s | %s | %s | %s | %s | %s |\n     +---+---+---+---+---+---+---+---+\n  3  | %s | %s | %s | %s | %s | %s | %s | %s |\n     +---+---+---+---+---+---+---+---+\n  2  | %s | %s | %s | %s | %s | %s | %s | %s |\n     +---+---+---+---+---+---+---+---+\n  1  | %s | %s | %s | %s | %s | %s | %s | %s |\n     +---+---+---+---+---+---+---+---+\n       a   b   c   d   e   f   g   h" % tuple(PIECE_STR[p] for row in reversed(board) for p in row))
+
+
+PB = lambda b:print()
 
 
 if __name__ == '__main__':
